@@ -55,7 +55,7 @@ do
     if [ $? == 0 ]
     then
         echo -e "\033[1;32m-- taginfo.json can be retrieved\033[0m"
-        jq '.' "$tempdir/taginfo.json"
+        jq '.' "$tempdir/taginfo.json" > /dev/null
         if [ $? == 0 ]
         then
             echo -e "\033[1;32m-- taginfo.json can be retrieved and is valid JSON\033[0m"
