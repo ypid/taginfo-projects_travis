@@ -28,6 +28,8 @@ then
     echo "project_list.txt is sorted"
 else
     echo "project_list.txt not is sorted" 1>&2
+    echo "You might want to run:" 1>&2
+    echo "    cp project_list_sorted.txt project_list.txt" 1>&2
     exit_code=$((exit_code+1))
 fi
 ## }}}
