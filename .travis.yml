@@ -1,9 +1,7 @@
 ---
 
 before_install:
-  - sudo apt-get update
-  - sudo echo "deb http://archive.ubuntu.com/ubuntu release-backports main restricted universe multiverse" > /etc/apt/sources.list.d/backports.list
-  - sudo apt-get update
+  - sudo apt-get update -qq
   - apt-get install jq
 
 script:
