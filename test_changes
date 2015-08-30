@@ -58,10 +58,10 @@ do
         jq '.' "$tempdir/taginfo.json" > /dev/null
         if [ $? == 0 ]
         then
-            echo -e "\033[1;32m-- taginfo.json can be retrieved and is valid JSON\033[0m"
+            echo -e "\033[1;32m-- taginfo.json is valid JSON\033[0m"
         else
             echo "" 1>&2
-            echo -e "\033[1;31m-- Problem with the taginfo.json file.\033[0m" 1>&2
+            echo -e "\033[1;31m-- taginfo.json is not valid JSON\033[0m" 1>&2
             exit_code=$((exit_code+1))
         fi
     else
