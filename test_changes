@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU Affero General Public License
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
+latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
 # latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
 
 exit_code=0
