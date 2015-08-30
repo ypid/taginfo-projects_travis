@@ -16,21 +16,42 @@
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
-latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
+# latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
 
 exit_code=0
+
+## Check if sorted {{{
+sort --unique project_list.txt > project_list_sorted.txt
+git diff --color-words --no-index project_list.txt project_list_sorted.txt
+if [ $? == 0 ]
+then
+    echo "project_list.txt is sorted"
+else
+    echo "project_list.txt not is sorted" 1>&2
+    exit_code=$((exit_code+1))
+fi
+## }}}
 
 git diff ${latest_upstream_master_commit_hash}..HEAD --color=always -- project_list.txt \
     | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' \
     | while read id url
 do
     echo "--- Testing $id: $url"
-    if [ -n "${id//[a-z_]/g}" ]
+    if [[ $id =~ ^[a-z_]+$ ]]
     then
         echo "ID is vaild"
     else
         echo "ID is not valid" 1>&2
+        exit_code="$((exit_code+1))"
+    fi
+    curl "$url" | jq '.'
+    if [ $? == 0 ]
+    then
+        echo "taginfo.json can be retrieved and is valid JSON"
+    else
+        echo "Problem with the taginfo.json file." 1>&2
         exit_code=$((exit_code+1))
     fi
-
 done
+
+exit "$exit_code"
