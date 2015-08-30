@@ -48,7 +48,7 @@ do
         exit_code=$((exit_code+1))
     fi
     ## Ensure that the output files does not yet exist.
-    tempdir="$(mktemp .tmp.XXXXXXXXX)"
+    tempdir="$(mktemp --directory)"
     curl "$url" --output "$tempdir/taginfo.json"
     if [ $? == 0 ]
     then
