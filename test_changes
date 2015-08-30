@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU Affero General Public License
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
+latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
 # latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
 
 exit_code=0
@@ -34,26 +34,39 @@ else
 fi
 ## }}}
 
-git diff ${latest_upstream_master_commit_hash}..HEAD --color=always -- project_list.txt \
-    | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' \
-    | while read id url
+git diff "${latest_upstream_master_commit_hash}..HEAD" --color=always -- project_list.txt \
+    | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' > project_list_diff.txt
+
+while read id url
 do
-    echo "--- Testing $id: $url"
+    echo "- Testing $id: $url"
     if [[ $id =~ ^[a-z_]+$ ]]
     then
-        echo "ID is vaild"
+        echo "-- ID is vaild"
     else
-        echo "ID is not valid" 1>&2
-        exit_code="$((exit_code+1))"
-    fi
-    curl "$url" | jq '.'
-    if [ $? == 0 ]
-    then
-        echo "taginfo.json can be retrieved and is valid JSON"
-    else
-        echo "Problem with the taginfo.json file." 1>&2
+        echo "-- ID is not valid" 1>&2
         exit_code=$((exit_code+1))
     fi
-done
+    ## Ensure that the output files does not yet exist.
+    tempdir="$(mktemp)"
+    curl "$url" --output "$tempdir/taginfo.json"
+    if [ $? == 0 ]
+    then
+        echo "-- taginfo.json can be retrieved"
+        jq '.' "$tempdir/taginfo.json"
+        if [ $? == 0 ]
+        then
+            echo "taginfo.json can be retrieved and is valid JSON"
+        else
+            echo "Problem with the taginfo.json file." 1>&2
+            exit_code=$((exit_code+1))
+        fi
+    else
+        echo "-- taginfo.json file can not be retrieved." 1>&2
+        exit_code=$((exit_code+1))
+    fi
+done < project_list_diff.txt
+
+echo "Problem count: $exit_code"
 
 exit "$exit_code"
