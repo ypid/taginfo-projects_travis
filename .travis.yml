@@ -2,7 +2,7 @@
 
 before_install:
   - sudo apt-get update -qq
-  - apt-get install jq
+  - sudo apt-get install jq
 
 script:
 
