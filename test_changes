@@ -1,0 +1,26 @@
+#!/bin/bash
+## @license AGPLv3 <https://www.gnu.org/licenses/agpl-3.0.html>
+## @author Copyright (C) 2015 Robin Schneider <ypid@riseup.net>
+##
+## This program is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, version 3 of the
+## License.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
+latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
+
+git diff ${latest_upstream_master_commit_hash}..HEAD --color=always -- project_list.txt \
+    | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' \
+    | while read line
+do
+    echo $line
+done

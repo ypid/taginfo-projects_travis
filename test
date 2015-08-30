@@ -1,0 +1,9 @@
+{
+  "ref": "refs/heads/master",
+  "url": "https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master",
+  "object": {
+    "sha": "8a895fa5d1808b7927c20ccc29978b2d5a13073c",
+    "type": "commit",
+    "url": "https://api.github.com/repos/ypid/taginfo-projects_travis/git/commits/8a895fa5d1808b7927c20ccc29978b2d5a13073c"
+  }
+}
