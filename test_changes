@@ -18,9 +18,19 @@
 # latest_upstream_master_commit_hash="$(curl https://api.github.com/repos/ypid/taginfo-projects_travis/git/refs/heads/master | jq --raw-output '.object.sha')"
 latest_upstream_master_commit_hash="8a895fa5d1808b7927c20ccc29978b2d5a13073c"
 
+exit_code=0
+
 git diff ${latest_upstream_master_commit_hash}..HEAD --color=always -- project_list.txt \
     | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/' \
-    | while read line
+    | while read id url
 do
-    echo $line
+    echo "--- Testing $id: $url"
+    if [ -n "${id//[a-z_]/g}" ]
+    then
+        echo "ID is vaild"
+    else
+        echo "ID is not valid" 1>&2
+        exit_code=$((exit_code+1))
+    fi
+
 done
