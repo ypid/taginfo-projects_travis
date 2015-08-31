@@ -2,12 +2,7 @@
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - jq
-      - curl
-
 script:
 
   - './test_changes'
+  - 'jq'
